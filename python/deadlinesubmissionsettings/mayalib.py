@@ -1,7 +1,6 @@
 import logging
 
 import maya.cmds as cmds
-import avalon
 from avalon.maya import lib
 
 log = logging.getLogger("DSS Maya Lib")
@@ -63,21 +62,33 @@ def apply_settings(instance, settings):
         settings(dict): values from the
 
     """
-    machine_list = settings.get("Whitelist", settings.get("Blacklist"))
-    cmds.setAttr("{}.whitelist".format(instance), "Whitelist" in settings)
+    if "whitelist" in settings:
+        cmds.setAttr("%s.whitelist" % instance, True)
+        settings.pop("whitelist", None)
 
-    cmds.setAttr("{}.suspendPublishJob".format(instance),
-                 settings["suspendPublishJob"])
-    cmds.setAttr("{}.includeDefaultRenderLayer".format(instance),
-                 settings["includeDefaultRenderLayer"])
+    for attr_name, value in settings.items():
 
-    cmds.setAttr("{}.priority".format(instance), settings["priority"])
+        args = {}
 
-    # Unlock and set value, relock after setting
-    machine_list_attr = "{}.machineList".format(instance)
-    unlock_attr(machine_list_attr)
-    cmds.setAttr(machine_list_attr, machine_list, type="string")
-    lock_attr(machine_list_attr)
+        # Format to Maya default
+        # attr_name = key[0].lower() + key[1:]
+        attr = "%s.%s" % (instance, attr_name)
+
+        # Check if attr is locked
+        lock = cmds.getAttr(attr, lock=True)
+        if lock:
+            unlock_attr(attr)
+
+        if isinstance(value, basestring):
+            args = {"type": "string"}
+        print(attr, value)
+        cmds.setAttr(attr, value, **args)
+
+        # Re lock attr
+        if lock:
+            lock_attr(attr)
+
+    log.info("Applied settings ..")
 
 
 def read_settings(instance):
@@ -90,29 +101,25 @@ def read_settings(instance):
         dict
     """
 
-    settings = dict()
-
-    settings["suspendPublishJob"] = cmds.getAttr("{}.suspendPublishJob".format(instance))
-    settings["priority"] = cmds.getAttr("{}.priority".format(instance))
-
+    suspend_attr = "{}.suspendPublishJob".format(instance)
     include_def_layer = "{}.includeDefaultRenderLayer".format(instance)
-    settings["includeDefaultRenderLayer"] = cmds.getAttr(include_def_layer)
+    run_slapcomp_attr = "{}.runSlapComp".format(instance)
+    priority_attr = "{}.priority".format(instance)
+    whitelist_attr = "{}.whitelist".format(instance)
+    machinelist_attr = "{}.machineList".format(instance)
+    flow_file_attr = "{}.flowFile".format(instance)
 
-    if cmds.getAttr("{}.whitelist".format(instance)):
-        settings["Whitelist"] = ""
+    settings = {
+        "suspendPublishJob": cmds.getAttr(suspend_attr),
+        "runSlapComp": cmds.getAttr(run_slapcomp_attr),
+        "priority": cmds.getAttr(priority_attr),
+        "includeDefaultRenderLayer": cmds.getAttr(include_def_layer),
+        "flowFile": cmds.getAttr(flow_file_attr),
+        "machineList": cmds.getAttr(machinelist_attr)
+    }
+
+    if cmds.getAttr(whitelist_attr):
+        settings["whiteList"] = ""
 
     return settings
 
-
-def create_renderglobals_node():
-    """Create renderglobals node for scene"""
-
-    log.info("Creating renderglobals node")
-
-    asset = avalon.Session["AVALON_ASSET"]
-    name = "renderglobalsDefault"
-    family = "colorbleed.renderglobals"
-
-    avalon.api.create(name=name, asset=asset, family=family)
-
-    return name
