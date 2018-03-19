@@ -24,8 +24,10 @@ def get_work_directory():
     assert project, "This is a bug"
     template = project["config"]["template"]["work"]
 
+    session["AVALON_TASK"] = "comp"
     session["AVALON_APP"] = "fusion"
     work_directory = pipeline._format_work_template(template, session)
+
     if not os.path.isdir(work_directory):
         print("Fusion app folder does not exist:\n%s" % work_directory)
         work_directory = pipeline._format_work_template(template, api.Session)
