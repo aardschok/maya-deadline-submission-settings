@@ -68,8 +68,6 @@ def apply_settings(instance, settings):
 
     for attr_name, value in settings.items():
 
-        args = {}
-
         # Format to Maya default
         # attr_name = key[0].lower() + key[1:]
         attr = "%s.%s" % (instance, attr_name)
@@ -79,9 +77,10 @@ def apply_settings(instance, settings):
         if lock:
             unlock_attr(attr)
 
+        args = {}
         if isinstance(value, basestring):
             args = {"type": "string"}
-        print(attr, value)
+
         cmds.setAttr(attr, value, **args)
 
         # Re lock attr
