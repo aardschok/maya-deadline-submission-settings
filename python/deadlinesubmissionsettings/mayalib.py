@@ -68,8 +68,6 @@ def apply_settings(instance, settings):
 
     for attr_name, value in settings.items():
 
-        # Format to Maya default
-        # attr_name = key[0].lower() + key[1:]
         attr = "%s.%s" % (instance, attr_name)
 
         # Check if attr is locked

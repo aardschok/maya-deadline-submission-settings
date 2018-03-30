@@ -145,7 +145,7 @@ class App(QtWidgets.QWidget):
     def connections(self):
 
         self.run_slap_comp.toggled.connect(self.on_run_slap_comp_toggled)
-        self.brows_file_btn.clicked.connect(self.on_brows_clicked)
+        self.brows_file_btn.clicked.connect(self.on_browse_clicked)
 
         self.priority_slider.valueChanged[int].connect(
             self.priority_value.setValue)
@@ -163,7 +163,7 @@ class App(QtWidgets.QWidget):
         self.flow_file.setEnabled(state)
         self.brows_file_btn.setEnabled(state)
 
-    def on_brows_clicked(self):
+    def on_browse_clicked(self):
 
         workdir = lib.get_work_directory()
         file_path, _ = QtWidgets.QFileDialog.getOpenFileName(
