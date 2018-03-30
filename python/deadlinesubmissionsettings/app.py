@@ -129,7 +129,7 @@ class App(QtWidgets.QWidget):
         self.defaultlayer = defaultlayer
         self.run_slap_comp = run_slap_comp
         self.flow_file = file_line
-        self.brows_file_btn = brows_btn
+        self.browse_file_btn = brows_btn
         self.priority_value = priority_value
         self.priority_slider = priority_slider
         self.black_list = black_list
@@ -145,7 +145,7 @@ class App(QtWidgets.QWidget):
     def connections(self):
 
         self.run_slap_comp.toggled.connect(self.on_run_slap_comp_toggled)
-        self.brows_file_btn.clicked.connect(self.on_browse_clicked)
+        self.browse_file_btn.clicked.connect(self.on_browse_clicked)
 
         self.priority_slider.valueChanged[int].connect(
             self.priority_value.setValue)
@@ -161,7 +161,7 @@ class App(QtWidgets.QWidget):
     def on_run_slap_comp_toggled(self):
         state = self.run_slap_comp.isChecked()
         self.flow_file.setEnabled(state)
-        self.brows_file_btn.setEnabled(state)
+        self.browse_file_btn.setEnabled(state)
 
     def on_browse_clicked(self):
 
