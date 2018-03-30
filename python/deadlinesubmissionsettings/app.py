@@ -39,19 +39,19 @@ class App(QtWidgets.QWidget):
         defaultlayer = QtWidgets.QCheckBox("Include Default Render Layer")
         run_slap_comp = QtWidgets.QCheckBox("Run Slap Comp")
 
-        brows_hlayout = QtWidgets.QHBoxLayout()
+        browse_hlayout = QtWidgets.QHBoxLayout()
         file_line = QtWidgets.QLineEdit()
 
         brows_icon = qta.icon("fa.folder", color="white")
-        brows_btn = QtWidgets.QPushButton()
-        brows_btn.setIcon(brows_icon)
+        browse_btn = QtWidgets.QPushButton()
+        browse_btn.setIcon(brows_icon)
 
         file_line.setPlaceholderText("<Slap Comp File>")
         file_line.setEnabled(False)
-        brows_btn.setEnabled(False)
+        browse_btn.setEnabled(False)
 
-        brows_hlayout.addWidget(file_line)
-        brows_hlayout.addWidget(brows_btn)
+        browse_hlayout.addWidget(file_line)
+        browse_hlayout.addWidget(browse_btn)
 
         # region Priority
         priority_grp = QtWidgets.QGroupBox("Priority")
@@ -117,7 +117,7 @@ class App(QtWidgets.QWidget):
         layout.addWidget(defaultlayer)
         layout.addWidget(publish)
         layout.addWidget(run_slap_comp)
-        layout.addLayout(brows_hlayout)
+        layout.addLayout(browse_hlayout)
         layout.addWidget(priority_grp)
         layout.addWidget(list_type_grp)
         layout.addLayout(machines_hlayout)
@@ -128,7 +128,7 @@ class App(QtWidgets.QWidget):
         self.defaultlayer = defaultlayer
         self.run_slap_comp = run_slap_comp
         self.flow_file = file_line
-        self.browse_file_btn = brows_btn
+        self.browse_file_btn = browse_btn
         self.priority_value = priority_value
         self.priority_slider = priority_slider
         self.black_list = black_list
@@ -190,8 +190,7 @@ class App(QtWidgets.QWidget):
             self.listed_machines.addItem(machine_name)
 
     def remove_selected_machines(self):
-        machines = self.listed_machines.selectedItems()
-        for machine in machines:
+        for machine in self.listed_machines.selectedItems():
             self.listed_machines.takeItem(self.listed_machines.row(machine))
 
     def create_machine_limit_options(self):
@@ -206,6 +205,7 @@ class App(QtWidgets.QWidget):
         self.create_machine_limit_options()
 
     def parse_settings(self):
+        """Convert the UI settings to Maya attributes"""
 
         # Get UI settings as dict
         job_info = {}
@@ -216,9 +216,10 @@ class App(QtWidgets.QWidget):
         job_info["priority"] = self.priority_value.value()
         job_info["suspendPublishJob"] = self.publish.isChecked()
         job_info["includeDefaultRenderLayer"] = self.defaultlayer.isChecked()
-        row_slap_coml = self.run_slap_comp.isChecked()
-        if row_slap_coml:
-            job_info["runSlapComp"] = row_slap_coml
+
+        run_slap_comp = self.run_slap_comp.isChecked()
+        if run_slap_comp:
+            job_info["runSlapComp"] = run_slap_comp
             job_info["flowFile"] = self.flow_file.text()
 
         job_info["whitelist"] = self._get_list_type()
@@ -262,14 +263,14 @@ class App(QtWidgets.QWidget):
         if settings.get("flowFile", None):
             self.flow_file.setText(settings["flowFile"])
 
-        white_list = "whiteList" in settings
+        white_list = "whitelist" in settings
         self.white_list.setChecked(white_list)
         self.black_list.setChecked(not white_list)
 
-        self.listed_machines.addItems(settings["machineList"].split(" "))
+        self.listed_machines.addItems(settings["machineList"].split())
 
     def _get_list_type(self):
-        return self.white_list.isChecked
+        return self.white_list.isChecked()
 
     def _get_listed_machines(self):
         # Turn unicode to strings
