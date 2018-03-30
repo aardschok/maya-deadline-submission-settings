@@ -51,22 +51,22 @@ def query(argument):
 
 def get_machine_list(debug=None):
     """Fetch the machine list (slaves) from Deadline"""
-    AVALON_SESSION = debug or api.Session["AVALON_DEADLINE"]
-    argument = "{}/api/slaves?NamesOnly=true".format(AVALON_SESSION)
+    AVALON_DEADLINE = debug or api.Session["AVALON_DEADLINE"]
+    argument = "{}/api/slaves?NamesOnly=true".format(AVALON_DEADLINE)
     return query(argument=argument)
 
 
 def get_pool_list(debug=None):
     """Get all pools from Deadline"""
-    AVALON_SESSION = debug or api.Session["AVALON_DEADLINE"]
-    argument = "{}/api/pools?NamesOnly=true".format(AVALON_SESSION)
+    AVALON_DEADLINE = debug or api.Session["AVALON_DEADLINE"]
+    argument = "{}/api/pools?NamesOnly=true".format(AVALON_DEADLINE)
     return query(argument)
 
 
 def get_group_list(debug=None):
     """Get all groups from Deadline"""
-    AVALON_SESSION = debug or api.Session["AVALON_DEADLINE"]
-    argument = "{}/api/groups?NamesOnly=true".format(AVALON_SESSION)
+    AVALON_DEADLINE = debug or api.Session["AVALON_DEADLINE"]
+    argument = "{}/api/groups?NamesOnly=true".format(AVALON_DEADLINE)
     return query(argument)
 
 
