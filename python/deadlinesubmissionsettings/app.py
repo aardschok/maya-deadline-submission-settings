@@ -217,10 +217,8 @@ class App(QtWidgets.QWidget):
         job_info["suspendPublishJob"] = self.publish.isChecked()
         job_info["includeDefaultRenderLayer"] = self.defaultlayer.isChecked()
 
-        run_slap_comp = self.run_slap_comp.isChecked()
-        if run_slap_comp:
-            job_info["runSlapComp"] = run_slap_comp
-            job_info["flowFile"] = self.flow_file.text()
+        job_info["runSlapComp"] = self.run_slap_comp.isChecked()
+        job_info["flowFile"] = self.flow_file.text()
 
         job_info["whitelist"] = self._get_list_type()
         job_info["machineList"] = machine_limits
