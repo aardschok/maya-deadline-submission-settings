@@ -1,5 +1,4 @@
 import sys
-# import pprint
 
 from avalon import api, io
 from avalon.tools import lib as tools_lib
