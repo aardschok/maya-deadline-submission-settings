@@ -62,9 +62,6 @@ def apply_settings(instance, settings):
         settings(dict): values from the
 
     """
-    if "whitelist" in settings:
-        cmds.setAttr("%s.whitelist" % instance, True)
-        settings.pop("whitelist", None)
 
     for attr_name, value in settings.items():
 
@@ -112,11 +109,9 @@ def read_settings(instance):
         "priority": cmds.getAttr(priority_attr),
         "includeDefaultRenderLayer": cmds.getAttr(include_def_layer),
         "flowFile": cmds.getAttr(flow_file_attr),
-        "machineList": cmds.getAttr(machinelist_attr)
+        "machineList": cmds.getAttr(machinelist_attr),
+        "whitelist": cmds.getAttr(whitelist_attr)
+
     }
 
-    if cmds.getAttr(whitelist_attr):
-        settings["whiteList"] = ""
-
     return settings
-
